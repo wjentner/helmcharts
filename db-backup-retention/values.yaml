@@ -32,8 +32,8 @@ config:
       key: my-secret-password-key
   # -- the database name to backup or --all-databases
   backupDatabases: --all-databases
-  # -- the retention time in seconds for backups (default 43200 = 12 hours)
-  retentionSeconds: 43200
+  # -- the retention time in minutes for backups (default 43200 minutes = 30 days)
+  retentionMinutes: 43200
   backupMountPath: /backups
   backupExec: mysqldump
   backupFilePrefix: db-backup
@@ -90,7 +90,7 @@ image:
   repository: ghcr.io/wjentner/k8s-db-backup-retention
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""

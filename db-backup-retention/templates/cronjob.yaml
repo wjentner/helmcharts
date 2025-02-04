@@ -82,8 +82,8 @@ spec:
                 value: {{ required ".config.backupFilePrefix must be set!" .Values.config.backupFilePrefix | quote }}
               - name: BACKUP_DIR
                 value: {{ required ".config.backupMountPath must be set!" .Values.config.backupMountPath | quote }}
-              - name: BACKUP_RETENTION_SECONDS
-                value: {{ .Values.config.retentionSeconds | quote }}
+              - name: BACKUP_RETENTION_MINUTES
+                value: {{ .Values.config.retentionMinutes | quote }}
               - name: BACKUP_EXEC
                 value: {{ required ".config.backupExec must be set!" .Values.config.backupExec | quote }}
               volumeMounts:

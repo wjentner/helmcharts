@@ -1,8 +1,49 @@
 # db-backup-retention
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+
+![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.0.1](https://img.shields.io/badge/AppVersion-v0.0.1-informational?style=flat-square) 
 
 A Helm chart to set up a database backup (including timed retention) using a CronJob.
+
+## Minimal examples
+
+The following example creates an hourly backup of a maria/mysql database system and keeps those backups for 30 days before deleting them.
+The backups are created by executing `mysqldump` inside the database pod.
+
+```yaml
+config:
+  dbPod: my-mariadb-0
+  dbUser:
+    value: root
+    #secret:
+    #  name: my-db-secret
+    #  key: my-secret-user-key
+  dbPassword:
+    # value: keepMeSecret! (not recommended)
+    secret:
+      name: my-db-secret
+      key: MARIADB_ROOT_PASSWORD
+  # backup all databases or name them explicitly
+  backupDatabases: --all-databases
+  # 30 days
+  retentionMinutes: 43200
+  backupFilePrefix: my-db-backup
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClass: my-storage
+
+# cronjob:
+#   schedule: 0 * * * *
+#   concurrencyPolicy: Forbid
+#   failedJobsHistoryLimit: 2
+#   successfulJobsHistoryLimit: 1
+#   backoffLimit: 2
+#   restartPolicy: Never
+```
+
+
 
 ## Maintainers
 
@@ -31,7 +72,7 @@ A Helm chart to set up a database backup (including timed retention) using a Cro
 | config.dbPod | string | `"my-mariadb-0"` | the name of the pod running the database (will be used to run backup command) |
 | config.dbUser | object | `{"value":"root"}` | the name of the database user to use for backup (either direct value or through secret) |
 | config.dbUser.value | string | `"root"` | the name of the database user to use for backup |
-| config.retentionSeconds | int | `43200` | the retention time in seconds for backups (default 43200 = 12 hours) |
+| config.retentionMinutes | int | `43200` | the retention time in seconds for backups (default 43200 = 30 days) |
 | cronjob.backoffLimit | int | `2` |  |
 | cronjob.concurrencyPolicy | string | `"Forbid"` |  |
 | cronjob.failedJobsHistoryLimit | int | `2` |  |
@@ -42,7 +83,7 @@ A Helm chart to set up a database backup (including timed retention) using a Cro
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"ghcr.io/wjentner/k8s-db-backup-retention"` |  |
-| image.tag | string | `"latest"` |  |
+| image.tag | string | `""` |  |
 | imagePullSecrets | list | `[]` |  |
 | nameOverride | string | `""` |  |
 | nameOverride | string | `""` | string to partially override db-backup-rentention.fullname |

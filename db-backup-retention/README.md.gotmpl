@@ -1,0 +1,52 @@
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+## Minimal examples
+
+The following example creates an hourly backup of a maria/mysql database system and keeps those backups for 30 days before deleting them.
+The backups are created by executing `mysqldump` inside the database pod.
+
+```yaml
+config:
+  dbPod: my-mariadb-0
+  dbUser:
+    value: root
+    #secret:
+    #  name: my-db-secret
+    #  key: my-secret-user-key
+  dbPassword:
+    # value: keepMeSecret! (not recommended)
+    secret:
+      name: my-db-secret
+      key: MARIADB_ROOT_PASSWORD
+  # backup all databases or name them explicitly
+  backupDatabases: --all-databases
+  # 30 days
+  retentionMinutes: 43200
+  backupFilePrefix: my-db-backup
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClass: my-storage
+
+# cronjob:
+#   schedule: 0 * * * *
+#   concurrencyPolicy: Forbid
+#   failedJobsHistoryLimit: 2
+#   successfulJobsHistoryLimit: 1
+#   backoffLimit: 2
+#   restartPolicy: Never
+```
+
+
+{{ template "chart.homepageLine" . }}
+{{ template "chart.maintainersSection" . }}
+{{ template "chart.sourcesSection" . }}
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+{{ template "helm-docs.versionFooter" . }}
