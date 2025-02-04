@@ -1,0 +1,143 @@
+# Default values for db-backup-retention.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## @param nameOverride String to partially override mariadb.fullname
+##
+nameOverride: ""
+## @param fullnameOverride String to fully override mariadb.fullname
+##
+fullnameOverride: ""
+
+## @param commonAnnotations Common annotations to add to all resources
+##
+commonAnnotations: {}
+## @param commonLabels Common labels to add to all resources
+##
+commonLabels: {}
+
+config:
+  dbPod: my-mariadb-0
+  dbUser:
+    value: root
+    #secret:
+    #  name: my-db-secret
+    #  key: my-secret-user-key
+  dbPassword:
+    # value: keepMeSecret!
+    secret:
+      name: my-db-secret
+      key: my-secret-password-key
+  backupDatabases: --all-databases
+  # 30 days
+  retentionSeconds: 43200
+  backupMountPath: /backups
+  backupExec: mysqldump
+  backupFilePrefix: db-backup
+
+
+cronjob:
+  schedule: 0 * * * *
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 2
+  successfulJobsHistoryLimit: 1
+  backoffLimit: 2
+  restartPolicy: Never
+
+
+persistence:
+  ## @param persistence.enabled Enable persistence to store backups using a `PersistentVolumeClaim`. If false, use emptyDir - for testing only.
+  ##
+  enabled: true
+  ## @param persistence.existingClaim Name of an existing `PersistentVolumeClaim` for 
+  ## NOTE: When it's set the rest of persistence parameters are ignored
+  ##
+  existingClaim: ""
+  ## @param persistence.storageClass backups persistent volume storage class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: ""
+  ## @param primary.persistence.labels Labels for the PVC
+  ##
+  labels: {}
+  ## @param primary.persistence.annotations MariaDB primary persistent volume claim annotations
+  ##
+  annotations: {}
+  ## @param primary.persistence.accessModes MariaDB primary persistent volume access Modes
+  ##
+  accessModes:
+    - ReadWriteOnce
+  ## @param primary.persistence.size MariaDB primary persistent volume size
+  ##
+  size: 8Gi
+  ## @param primary.persistence.selector Selector to match an existing Persistent Volume
+  ## selector:
+  ##   matchLabels:
+  ##     app: my-app
+  ##
+  selector: {}
+
+
+
+image:
+  repository: ghcr.io/wjentner/k8s-db-backup-retention
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+rbac:
+  create: true
+  role:
+    name: ""
+    annotations: {}
+  roleBinding:
+    name: ""
+    annotations: {}
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

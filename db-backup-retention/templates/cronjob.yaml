@@ -1,0 +1,105 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "db-backup-retention.fullname" . }}
+  labels:
+    {{- include "db-backup-retention.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.cronjob.schedule }}
+  concurrencyPolicy: {{ .Values.cronjob.concurrencyPolicy }}
+  failedJobsHistoryLimit: 2
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      labels:
+        {{- include "db-backup-retention.labels" . | nindent 8 }}
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            {{- include "db-backup-retention.labels" . | nindent 12 }}
+          {{- with .Values.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        spec:
+          serviceAccountName: {{ include "db-backup-retention.serviceAccountName" . }}
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          volumes:
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+            - name: backups-dir
+              persistenceVolumeClaim:
+                claimName: {{ include "db-backup-retention.fullname" . }}
+{{- else if and .Values.persistence.enabled .Values.persistence.existingClaim }}
+            - name: backups-dir
+              persistentVolumeClaim:
+                claimName: {{ tpl .Values.persistence.existingClaim . }}
+{{- else if not .Values.persistence.enabled }}
+            - name: backups-dir
+              emptyDir: {}
+{{- end }}
+          restartPolicy: Never
+          containers:
+            - name: {{ .Chart.Name }}
+              securityContext:
+                {{- toYaml .Values.securityContext | nindent 16 }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              env:
+              {{- with .Values.config.dbUser }}
+              - name: BACKUP_DB_USER
+                {{- if .value }}
+                value: {{ .value }}
+                {{- else if .secret }}
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ .secret.name }}
+                    key: {{ .secret.key }}
+                {{- end }}
+              {{- end }}
+              {{- with .Values.config.dbPassword }}
+              - name: BACKUP_DB_PASSWORD
+                {{- if .value }}
+                value: {{ .value }}
+                {{- else if .secret }}
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ .secret.name }}
+                    key: {{ .secret.key }}
+                {{- end }}
+              {{- end }}
+              - name: BACKUP_DATABASES
+                value: {{ required ".config.backupDatabases must be set!" .Values.config.backupDatabases }}
+              - name: BACKUP_K8S_DB_NAMESPACE
+                value: {{ .Release.Namespace }}
+              - name: BACKUP_K8S_DB_POD
+                value: {{ required ".config.dbPod must be set!" .Values.config.dbPod }}
+              - name: BACKUP_FILE_PREFIX
+                value: {{ required ".config.backupFilePrefix must be set!" .Values.config.backupFilePrefix }}
+              - name: BACKUP_DIR
+                value: {{ required ".config.backupMountPath must be set!" .Values.config.backupMountPath }}
+              - name: BACKUP_RETENTION_SECONDS
+                value: {{ .Values.config.retentionSeconds }}
+              - name: BACKUP_EXEC
+                value: {{ required ".config.backupExec must be set!" .Values.config.backupExec }}
+              volumeMounts:
+              - name: backups-dir
+                mountPath: {{ .Values.config.backupMountPath }}
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
