@@ -6,8 +6,16 @@
 
 ## Minimal examples
 
+### MariaDB/MySQL
+
 The following example creates an hourly backup of a maria/mysql database system and keeps those backups for 30 days before deleting them.
 The backups are created by executing `mysqldump` inside the database pod.
+This will create files in your mounted folder similar to:
+
+```shell
+my-db-backup-2025-02-04T20:00:01+00:00.sql.gz
+my-db-backup-2025-02-04T21:00:01+00:00.sql.gz
+```
 
 ```yaml
 config:
