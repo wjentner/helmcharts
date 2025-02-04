@@ -29,3 +29,12 @@ dependencies:
   tags:
   - bitnami-common
   version: 2.x.x
+
+maintainers:
+- name: Wolfgang Jentner
+  email: wolfgang.jentner@gmail.com
+
+annotations:
+  artifacthub.io/changes: |
+    - kind: added
+      description: initial helm chart for testing
