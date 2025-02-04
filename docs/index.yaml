@@ -1,20 +1,29 @@
 apiVersion: v1
 entries:
   db-backup-retention:
-  - apiVersion: v2
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: added
+          description: initial helm chart for testing
+    apiVersion: v2
     appVersion: 0.0.1
-    created: "2025-02-03T16:34:09.3731122-08:00"
+    created: "2025-02-04T10:30:09.2504768-08:00"
     dependencies:
     - name: common
       repository: oci://registry-1.docker.io/bitnamicharts
       tags:
       - bitnami-common
       version: 2.x.x
-    description: A Helm chart for Kubernetes
-    digest: ad7033c43b9cf946ae123621210c32637e546a491eda7ef54ab269596de7d172
+    description: A Helm chart to set up a database backup (including timed retention)
+      using a CronJob.
+    digest: 1124b722eee629c93e6f01966f315a84ae1c0cb16ae9ffe7fb9eba6fee72ea9e
+    maintainers:
+    - email: wolfgang.jentner@gmail.com
+      name: Wolfgang Jentner
+      url: https://wjentner.io
     name: db-backup-retention
     type: application
     urls:
     - https://wjentner.github.io/helmcharts/db-backup-retention-0.0.1.tgz
     version: 0.0.1
-generated: "2025-02-03T16:34:09.3718891-08:00"
+generated: "2025-02-04T10:30:09.2492545-08:00"
