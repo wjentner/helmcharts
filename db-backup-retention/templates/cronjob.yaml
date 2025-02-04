@@ -53,7 +53,7 @@ spec:
               {{- with .Values.config.dbUser }}
               - name: BACKUP_DB_USER
                 {{- if .value }}
-                value: {{ .value }}
+                value: {{ .value | quote }}
                 {{- else if .secret }}
                 valueFrom:
                   secretKeyRef:
@@ -73,19 +73,19 @@ spec:
                 {{- end }}
               {{- end }}
               - name: BACKUP_DATABASES
-                value: {{ required ".config.backupDatabases must be set!" .Values.config.backupDatabases }}
+                value: {{ required ".config.backupDatabases must be set!" .Values.config.backupDatabases | quote }}
               - name: BACKUP_K8S_DB_NAMESPACE
-                value: {{ .Release.Namespace }}
+                value: {{ .Release.Namespace | quote }}
               - name: BACKUP_K8S_DB_POD
-                value: {{ required ".config.dbPod must be set!" .Values.config.dbPod }}
+                value: {{ required ".config.dbPod must be set!" .Values.config.dbPod | quote }}
               - name: BACKUP_FILE_PREFIX
-                value: {{ required ".config.backupFilePrefix must be set!" .Values.config.backupFilePrefix }}
+                value: {{ required ".config.backupFilePrefix must be set!" .Values.config.backupFilePrefix | quote }}
               - name: BACKUP_DIR
-                value: {{ required ".config.backupMountPath must be set!" .Values.config.backupMountPath }}
+                value: {{ required ".config.backupMountPath must be set!" .Values.config.backupMountPath | quote }}
               - name: BACKUP_RETENTION_SECONDS
-                value: {{ .Values.config.retentionSeconds }}
+                value: {{ .Values.config.retentionSeconds | quote }}
               - name: BACKUP_EXEC
-                value: {{ required ".config.backupExec must be set!" .Values.config.backupExec }}
+                value: {{ required ".config.backupExec must be set!" .Values.config.backupExec | quote }}
               volumeMounts:
               - name: backups-dir
                 mountPath: {{ .Values.config.backupMountPath }}

@@ -2,34 +2,37 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-## @param nameOverride String to partially override mariadb.fullname
-##
+# -- string to partially override db-backup-rentention.fullname
 nameOverride: ""
-## @param fullnameOverride String to fully override mariadb.fullname
-##
+
+# -- string to fully override db-backup-rentention.fullname
 fullnameOverride: ""
 
-## @param commonAnnotations Common annotations to add to all resources
-##
+# -- common annotations to add to all resources
 commonAnnotations: {}
-## @param commonLabels Common labels to add to all resources
-##
+
+# -- common labels to add to all resources
 commonLabels: {}
 
 config:
+  # -- the name of the pod running the database (will be used to run backup command)
   dbPod: my-mariadb-0
+  # -- the name of the database user to use for backup (either direct value or through secret)
   dbUser:
+    # -- the name of the database user to use for backup
     value: root
     #secret:
     #  name: my-db-secret
     #  key: my-secret-user-key
+  # -- the database password to use for backup (either direct value or through secret)
   dbPassword:
     # value: keepMeSecret!
     secret:
       name: my-db-secret
       key: my-secret-password-key
+  # -- the database name to backup or --all-databases
   backupDatabases: --all-databases
-  # 30 days
+  # -- the retention time in seconds for backups (default 43200 = 12 hours)
   retentionSeconds: 43200
   backupMountPath: /backups
   backupExec: mysqldump
