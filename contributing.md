@@ -1,6 +1,6 @@
-# DISC Helm Charts
+# WJentner Helm Charts
 
-[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/ou-disc-charts)](https://artifacthub.io/packages/search?repo=ou-disc-charts)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/wjentner-charts)](https://artifacthub.io/packages/search?repo=wjentner-charts)
 
 ## Development
 
