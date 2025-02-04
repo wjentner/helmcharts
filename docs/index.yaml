@@ -7,7 +7,7 @@ entries:
           description: initial helm chart for testing
     apiVersion: v2
     appVersion: 0.0.1
-    created: "2025-02-04T10:42:05.9552919-08:00"
+    created: "2025-02-04T11:29:52.7576428-08:00"
     dependencies:
     - name: common
       repository: oci://registry-1.docker.io/bitnamicharts
@@ -16,7 +16,7 @@ entries:
       version: 2.x.x
     description: A Helm chart to set up a database backup (including timed retention)
       using a CronJob.
-    digest: 1e36bbf7f85d899b19d8bae198fda58aba38ec08e0b41a539758ef98aef10282
+    digest: 4d8ad4a35fec69140ed9062291a824b6e7b9e87a0c1cf62fac29eebe8e06a28a
     maintainers:
     - email: wolfgang.jentner@gmail.com
       name: Wolfgang Jentner
@@ -26,4 +26,4 @@ entries:
     urls:
     - https://wjentner.github.io/helmcharts/db-backup-retention-0.0.1.tgz
     version: 0.0.1
-generated: "2025-02-04T10:42:05.9523794-08:00"
+generated: "2025-02-04T11:29:52.75452-08:00"

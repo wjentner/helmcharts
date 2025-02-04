@@ -32,7 +32,7 @@ spec:
           volumes:
 {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
             - name: backups-dir
-              persistenceVolumeClaim:
+              persistentVolumeClaim:
                 claimName: {{ include "db-backup-retention.fullname" . }}
 {{- else if and .Values.persistence.enabled .Values.persistence.existingClaim }}
             - name: backups-dir
