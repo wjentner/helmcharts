@@ -1,15 +1,21 @@
 # db-backup-retention
 
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.0.1](https://img.shields.io/badge/AppVersion-v0.0.1-informational?style=flat-square) 
+![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.0.0](https://img.shields.io/badge/AppVersion-v1.0.0-informational?style=flat-square) 
 
 A Helm chart to set up a database backup (including timed retention) using a CronJob.
 
+## Script
+
+The Dockerfile and script to create the backup can be found here: https://github.com/wjentner/k8s-db-backup-retention
+
+> This has been tested with bitnami/mariadb and bitnami/postgresql images. Other images might require adjustments.
+
 ## Minimal examples
 
-### MariaDB/MySQL
+### MariaDB/MySQL (mysqldump)
 
-The following example creates an hourly backup of a maria/mysql database system and keeps those backups for 30 days before deleting them.
+The following example creates an hourly backup of a MariaDB/MySQL database system and keeps those backups for 30 days before deleting them.
 The backups are created by executing `mysqldump` inside the database pod.
 This will create files in your mounted folder similar to:
 
@@ -33,6 +39,51 @@ config:
       key: MARIADB_ROOT_PASSWORD
   # backup all databases or name them explicitly
   backupDatabases: --all-databases
+  # 30 days
+  retentionMinutes: 43200
+  backupFilePrefix: my-db-backup
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClass: my-storage
+
+# cronjob:
+#   schedule: 0 * * * *
+#   concurrencyPolicy: Forbid
+#   failedJobsHistoryLimit: 2
+#   successfulJobsHistoryLimit: 1
+#   backoffLimit: 2
+#   restartPolicy: Never
+```
+
+### PostgreSQL (pg_dump/pg_dumpall)
+
+The following example creates an hourly backup of a PostgreSQL database system and keeps those backups for 30 days before deleting them.
+The backups are created by executing `pg_dumpall` inside the database pod.
+This will create files in your mounted folder similar to:
+
+```shell
+my-db-backup-2025-02-04T20:00:01+00:00.sql.gz
+my-db-backup-2025-02-04T21:00:01+00:00.sql.gz
+```
+
+```yaml
+config:
+  dbPod: my-postgresql-0
+  dbUser:
+    value: root
+    #secret:
+    #  name: my-db-secret
+    #  key: my-secret-user-key
+  dbPassword:
+    # value: keepMeSecret! (not recommended)
+    secret:
+      name: my-db-secret
+      key: DB_ROOT_PASSWORD
+  backupExec: pg_dumpall
+  # ignored for pg_dumpall
+  # backupDatabases: mydatabase
   # 30 days
   retentionMinutes: 43200
   backupFilePrefix: my-db-backup
