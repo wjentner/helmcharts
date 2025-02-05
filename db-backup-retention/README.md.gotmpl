@@ -12,7 +12,7 @@ The Dockerfile and script to create the backup can be found here: https://github
 
 ## Minimal examples
 
-### MariaDB/MySQL (mysqldump)
+### MariaDB/MySQL (mariadb-dump/mysqldump)
 
 The following example creates an hourly backup of a MariaDB/MySQL database system and keeps those backups for 30 days before deleting them.
 The backups are created by executing `mysqldump` inside the database pod.
@@ -36,6 +36,8 @@ config:
     secret:
       name: my-db-secret
       key: MARIADB_ROOT_PASSWORD
+  # if you use MySQL, consider using mysqldump
+  backupExec: mariadb-dump
   # backup all databases or name them explicitly
   backupDatabases: --all-databases
   # 30 days

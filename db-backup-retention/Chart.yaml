@@ -15,13 +15,13 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 1.0.1
+version: 1.1.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "v1.0.1"
+appVersion: "v1.1.0"
 
 dependencies:
 - name: common
@@ -37,7 +37,11 @@ maintainers:
 
 annotations:
   artifacthub.io/changes: |
+    - kind: added
+      description: allow mariadb-dump as config.backupExec
+    - kind: changed
+      description: changed default value for config.backupExec from mysqldump to mariadb-dump
     - kind: fixed
-      description: update app version to v1.0.1 - updated script in image will fail job if errors occur
+      description: print filenames that are being removed
     - kind: fixed
       description: updated documentation

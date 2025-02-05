@@ -3,13 +3,44 @@ entries:
   db-backup-retention:
   - annotations:
       artifacthub.io/changes: |
+        - kind: added
+          description: allow mariadb-dump as config.backupExec
+        - kind: changed
+          description: changed default value for config.backupExec from mysqldump to mariadb-dump
+        - kind: fixed
+          description: print filenames that are being removed
+        - kind: fixed
+          description: updated documentation
+    apiVersion: v2
+    appVersion: v1.1.0
+    created: "2025-02-04T18:00:32.162923-08:00"
+    dependencies:
+    - name: common
+      repository: oci://registry-1.docker.io/bitnamicharts
+      tags:
+      - bitnami-common
+      version: 2.x.x
+    description: A Helm chart to set up a database backup (including timed retention)
+      using a CronJob.
+    digest: ffe7b5f6070d7cf20d2cc740c591f5d8e5c2fc98ac21b5a94b79b24a68686dda
+    maintainers:
+    - email: wolfgang.jentner@gmail.com
+      name: Wolfgang Jentner
+      url: https://wjentner.io
+    name: db-backup-retention
+    type: application
+    urls:
+    - https://wjentner.github.io/helmcharts/db-backup-retention-1.1.0.tgz
+    version: 1.1.0
+  - annotations:
+      artifacthub.io/changes: |
         - kind: fixed
           description: update app version to v1.0.1 - updated script in image will fail job if errors occur
         - kind: fixed
           description: updated documentation
     apiVersion: v2
     appVersion: v1.0.1
-    created: "2025-02-04T17:10:43.9271058-08:00"
+    created: "2025-02-04T18:00:32.1613079-08:00"
     dependencies:
     - name: common
       repository: oci://registry-1.docker.io/bitnamicharts
@@ -36,7 +67,7 @@ entries:
           description: updated documentation
     apiVersion: v2
     appVersion: v1.0.0
-    created: "2025-02-04T17:10:43.925512-08:00"
+    created: "2025-02-04T18:00:32.1591955-08:00"
     dependencies:
     - name: common
       repository: oci://registry-1.docker.io/bitnamicharts
@@ -61,7 +92,7 @@ entries:
           description: initial helm chart for testing
     apiVersion: v2
     appVersion: v0.0.2
-    created: "2025-02-04T17:10:43.923909-08:00"
+    created: "2025-02-04T18:00:32.1575959-08:00"
     dependencies:
     - name: common
       repository: oci://registry-1.docker.io/bitnamicharts
@@ -80,4 +111,4 @@ entries:
     urls:
     - https://wjentner.github.io/helmcharts/db-backup-retention-0.0.1.tgz
     version: 0.0.1
-generated: "2025-02-04T17:10:43.9223349-08:00"
+generated: "2025-02-04T18:00:32.1559935-08:00"

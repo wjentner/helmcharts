@@ -1,7 +1,7 @@
 # db-backup-retention
 
 
-![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.0.0](https://img.shields.io/badge/AppVersion-v1.0.0-informational?style=flat-square) 
+![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.1.0](https://img.shields.io/badge/AppVersion-v1.1.0-informational?style=flat-square) 
 
 A Helm chart to set up a database backup (including timed retention) using a CronJob.
 
@@ -13,7 +13,7 @@ The Dockerfile and script to create the backup can be found here: https://github
 
 ## Minimal examples
 
-### MariaDB/MySQL (mysqldump)
+### MariaDB/MySQL (mysqldump/mariadb-dump)
 
 The following example creates an hourly backup of a MariaDB/MySQL database system and keeps those backups for 30 days before deleting them.
 The backups are created by executing `mysqldump` inside the database pod.
@@ -37,6 +37,8 @@ config:
     secret:
       name: my-db-secret
       key: MARIADB_ROOT_PASSWORD
+  # if you use MariaDB, consider using mariadb-dump
+  backupExec: mysqldump
   # backup all databases or name them explicitly
   backupDatabases: --all-databases
   # 30 days
@@ -124,7 +126,7 @@ persistence:
 | commonAnnotations | object | `{}` | common annotations to add to all resources |
 | commonLabels | object | `{}` | common labels to add to all resources |
 | config.backupDatabases | string | `"--all-databases"` | the database name to backup or `--all-databases` if mysqldump is used. Will be ignored for pg_dumpall. |
-| config.backupExec | string | `"mysqldump"` | the executable to run for backup. Allowed values are: mysqldump, pg_dump, pg_dumpall. |
+| config.backupExec | string | `"mysqldump"` | the executable to run for backup. Allowed values are: mysqldump, mariadb-dump, pg_dump, & pg_dumpall. |
 | config.backupFilePrefix | string | `"db-backup"` | the prefix for the backup file (will produce: db-backup-2025-02-04T20:00:01+00:00.sql.gz) |
 | config.backupMountPath | string | `"/backups"` | the path to store the backup file |
 | config.dbPassword | object | `{"secret":{"key":"my-secret-password-key","name":"my-db-secret"}}` | the database password to use for backup (either direct value or through secret) |

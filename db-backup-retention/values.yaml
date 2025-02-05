@@ -36,8 +36,8 @@ config:
   retentionMinutes: 43200
   # -- the path to store the backup file
   backupMountPath: /backups
-  # -- the executable to run for backup. Allowed values are: mysqldump, pg_dump, pg_dumpall.
-  backupExec: mysqldump
+  # -- the executable to run for backup. Allowed values are: mysqldump, mariadb-dump, pg_dump, & pg_dumpall.
+  backupExec: mariadb-dump
   # -- the prefix for the backup file (will produce: db-backup-2025-02-04T20:00:01+00:00.sql.gz)
   backupFilePrefix: db-backup
 
